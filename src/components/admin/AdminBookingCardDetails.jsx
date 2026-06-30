@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { getAdminBookingCategory, ADMIN_CATEGORY_META } from '../../utils/bookingStatus';
 import { parseBookingNotes } from '../../utils/parseBookingNotes';
 import { Calendar, Phone, User, Check, X, ShieldAlert, CircleDollarSign } from 'lucide-react';
 import BookingPriceBreakdown from './BookingPriceBreakdown';
 
 export default function AdminBookingCardDetails({ booking, onVerify, onCancel, onCollectCash }) {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const category = getAdminBookingCategory(booking);
   const meta = ADMIN_CATEGORY_META[category] || { label: booking.status, colorClass: "bg-slate-500/10 text-slate-400" };
   const parsedNotes = parseBookingNotes(booking.notes);
@@ -113,8 +115,8 @@ export default function AdminBookingCardDetails({ booking, onVerify, onCancel, o
       )}
 
       {/* Price breakdown */}
-      <BookingPriceBreakdown 
-        notes={booking.notes} 
+      <BookingPriceBreakdown
+        notes={booking.notes}
         totalPrice={booking.total_price}
         courtCount={1}
       />
@@ -123,10 +125,10 @@ export default function AdminBookingCardDetails({ booking, onVerify, onCancel, o
       <div className="flex gap-2 justify-end mt-2 pt-2 border-t border-white/5">
         {category === 'paid_verify' && onVerify && (
           <button
-            onClick={() => onVerify(booking.id)}
+            onClick={() => setShowConfirmModal(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs transition-all shadow-[0_0_12px_rgba(16,185,129,0.2)]"
           >
-            <Check size={14} /> Confirm Payment
+            <Check size={14} /> Confirm Booking
           </button>
         )}
 
@@ -148,6 +150,45 @@ export default function AdminBookingCardDetails({ booking, onVerify, onCancel, o
           </button>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && createPortal(
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowConfirmModal(false)}
+        >
+          <div 
+            className="glass border border-emerald-500/30 rounded-2xl w-full max-w-sm p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.15)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto mb-4">
+              <Check size={24} />
+            </div>
+            <h3 className="font-display font-bold text-white text-lg mb-2">Confirm Booking</h3>
+            <p className="text-sm text-slate-400 mb-6">
+              Are you sure you want to confirm this booking for <strong className="text-white">{parsedNotes.bookerName || 'Guest'}</strong>?
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  onVerify(booking.id);
+                  setShowConfirmModal(false);
+                }}
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+              >
+                Confirm Booking
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="w-full py-3 bg-slate-900 hover:bg-slate-800 border border-white/5 text-slate-300 font-bold text-sm rounded-xl transition-all"
+              >
+                Go back &crarr;
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
