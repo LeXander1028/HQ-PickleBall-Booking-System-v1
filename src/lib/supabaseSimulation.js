@@ -338,11 +338,11 @@ export const supabaseSimulation = {
       const db = getInitialDB();
       // Look up profile matching email-mock-id or assume it's created if we type anything
       let profile = db.profiles.find(p => p.id === email.replace(/[@.]/g, '-'));
-      
+
       // If we are logging in as admin or player seeds
-      if (email === 'admin@paddlehub.ph') {
+      if (email === 'admin@hqpickle.ph') {
         profile = db.profiles.find(p => p.role === 'admin');
-      } else if (email === 'player@paddlehub.ph') {
+      } else if (email === 'player@hqpickle.ph') {
         profile = db.profiles.find(p => p.id === 'mock-player-uuid-1');
       }
 
@@ -448,18 +448,18 @@ export const supabaseSimulation = {
 
       for (const court of activeCourts) {
         // check overlap against bookings
-        const overlapsBooking = db.bookings.some(b => 
+        const overlapsBooking = db.bookings.some(b =>
           b.court_id === court.id &&
           b.date === p_date &&
           b.status !== 'cancelled' &&
-          !( (b.start_hour + b.duration_hours <= p_start_hour) || (b.start_hour >= p_start_hour + p_duration_hours) )
+          !((b.start_hour + b.duration_hours <= p_start_hour) || (b.start_hour >= p_start_hour + p_duration_hours))
         );
 
         // check overlap against blocks
         const overlapsBlock = db.blocked_slots.some(bs =>
           bs.court_id === court.id &&
           bs.date === p_date &&
-          !( (bs.start_hour + bs.duration_hours <= p_start_hour) || (bs.start_hour >= p_start_hour + p_duration_hours) )
+          !((bs.start_hour + bs.duration_hours <= p_start_hour) || (bs.start_hour >= p_start_hour + p_duration_hours))
         );
 
         if (!overlapsBooking && !overlapsBlock) {
@@ -497,7 +497,7 @@ export const supabaseSimulation = {
         const court = freeCourts[i];
         const isFirst = i === 0;
         const price = singleCourtPrice + (isFirst ? extrasPrice : 0);
-        
+
         const newBooking = {
           id: `booking-hold-${Math.random().toString(36).substring(2, 9)}`,
           user_id: userId,
@@ -621,7 +621,7 @@ class QueryBuilder {
 
   async then(resolve) {
     const db = getInitialDB();
-    
+
     if (!db[this.table]) {
       resolve({ data: null, error: { message: `Table ${this.table} not found` } });
       return;
@@ -682,7 +682,7 @@ class QueryBuilder {
     if (this.action === 'update') {
       const payload = this.actionPayload;
       let updatedRows = [];
-      
+
       db[this.table] = db[this.table].map(row => {
         if (filterFn(row)) {
           const updated = { ...row, ...payload };
