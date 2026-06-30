@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ShieldCheck, Mail, Lock, User, Phone, MapPin, AlertCircle } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/hqPickleCircleFrame.png';
 
 export default function Login() {
   const { login, signup, user } = useAuth();
@@ -55,7 +55,7 @@ export default function Login() {
       <div className="w-full max-w-md glass border border-white/5 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-6 relative z-10 shadow-2xl">
         {/* Branding logo */}
         <div className="flex flex-col items-center gap-2">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center p-1.5 border border-white/10 shadow-lg">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center drop-shadow-2xl mb-2">
             <img src={logo} alt="PaddleHub Logo" className="w-full h-full object-contain" />
           </div>
           <h2 className="font-display font-extrabold text-2xl text-white tracking-wider">

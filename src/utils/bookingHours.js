@@ -111,13 +111,13 @@ export function classifySlotAvailability({
  */
 export function getHourRateBracket(hour) {
   if (hour >= 0 && hour <= 6) {
-    return { name: "Late Night", color: "bracket-night", rate: 500 };
+    return { name: "Late Night", color: "bracket-night", rate: 600 };
   }
   if (hour >= 7 && hour <= 11) {
-    return { name: "Morning", color: "bracket-morning", rate: 400 };
+    return { name: "Morning", color: "bracket-morning", rate: 600 };
   }
   if (hour >= 12 && hour <= 16) {
-    return { name: "Afternoon", color: "bracket-afternoon", rate: 450 };
+    return { name: "Afternoon", color: "bracket-afternoon", rate: 600 };
   }
-  return { name: "Evening", color: "bracket-evening", rate: 500 };
+  return { name: "Evening", color: "bracket-evening", rate: 600 };
 }

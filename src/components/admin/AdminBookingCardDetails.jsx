@@ -105,6 +105,13 @@ export default function AdminBookingCardDetails({ booking, onVerify, onCancel, o
         </div>
       )}
 
+      {/* Rejection Reason segment if present */}
+      {booking.status === 'cancelled' && booking.rejection_reason && (
+        <div className="bg-rose-500/10 border-l-2 border-rose-500 px-3 py-1.5 text-xs text-rose-400 italic mt-2">
+          Rejection Reason: "{booking.rejection_reason}"
+        </div>
+      )}
+
       {/* Price breakdown */}
       <BookingPriceBreakdown 
         notes={booking.notes} 

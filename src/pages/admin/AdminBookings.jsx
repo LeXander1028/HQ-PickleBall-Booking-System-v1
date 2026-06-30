@@ -93,29 +93,39 @@ export default function AdminBookings() {
   };
 
   const handleCancel = async (id) => {
-    if (!window.confirm("Are you sure you want to cancel this booking?")) return;
+    const reason = window.prompt("Are you sure you want to cancel this booking?\n\nReason for rejection (optional):");
+    if (reason === null) return;
+
     try {
       const b = bookings.find(item => item.id === id);
       if (!b) return;
 
+      const updateData = { status: BOOKING_STATUSES.CANCELLED };
+      if (reason.trim() !== "") {
+        updateData.rejection_reason = reason.trim();
+      }
+
       const { error } = await supabase
         .from('bookings')
-        .update({ status: BOOKING_STATUSES.CANCELLED })
+        .update(updateData)
         .eq('id', id);
 
       if (error) throw error;
 
       // Notify player
       if (b.user_id) {
+        let msg = `Your court booking on ${b.date} has been cancelled by the administrator.`;
+        if (reason.trim()) msg += `\nReason: ${reason.trim()}`;
+
         await supabase.from('notifications').insert({
           user_id: b.user_id,
           title: "Booking Cancelled",
-          message: `Your court booking on ${b.date} has been cancelled by the administrator.`,
+          message: msg,
           read: false
         });
       }
 
-      setBookings(prev => prev.map(item => item.id === id ? { ...item, status: BOOKING_STATUSES.CANCELLED } : item));
+      setBookings(prev => prev.map(item => item.id === id ? { ...item, ...updateData } : item));
     } catch (err) {
       alert("Failed to cancel booking: " + err.message);
     }

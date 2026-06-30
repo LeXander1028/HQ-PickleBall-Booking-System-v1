@@ -34,19 +34,22 @@ export default function UserBookingTimeGrid({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           <div className="flex items-center gap-2 bg-slate-900/40 rounded-lg p-2 border border-white/5">
             <span className="w-3 h-3 rounded bg-orange-500" />
-            <span>Morning (₱400/hr)</span>
+            <span>Morning (₱600/hr)</span>
           </div>
           <div className="flex items-center gap-2 bg-slate-900/40 rounded-lg p-2 border border-white/5">
             <span className="w-3 h-3 rounded bg-teal-500" />
-            <span>Afternoon (₱450/hr)</span>
+            <span>Afternoon (₱600/hr)</span>
           </div>
           <div className="flex items-center gap-2 bg-slate-900/40 rounded-lg p-2 border border-white/5">
             <span className="w-3 h-3 rounded bg-indigo-500" />
-            <span>Evening (₱500/hr)</span>
+            <span>Evening (₱600/hr)</span>
           </div>
           <div className="flex items-center gap-2 bg-slate-900/40 rounded-lg p-2 border border-white/5">
             <span className="w-3 h-3 rounded bg-fuchsia-500" />
-            <span>Late Night (₱500/hr)</span>
+            <span>Late Night (₱600/hr)</span>
+          </div>
+          <div className="col-span-2 sm:col-span-4 mt-1 bg-emerald-500/10 border border-emerald-500/20 p-2 rounded-lg text-emerald-400 font-semibold">
+            Promo: ₱300/person Mon-Thurs 6AM-12NN (Automatically applied at checkout)
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { VENUE_INFO } from '../lib/constants';
 import { ShieldCheck, MapPin, Compass, Award, Activity } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/hqPickleCircleFrame.png';
 
 export default function Landing() {
   const { user } = useAuth();
@@ -17,16 +17,16 @@ export default function Landing() {
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
 
         <div className="relative flex flex-col items-center max-w-3xl gap-6 z-10">
-          <div className="relative w-24 h-24 rounded-3xl overflow-hidden bg-slate-900 flex items-center justify-center p-2.5 border border-white/10 shadow-2xl mb-2 animate-bounce">
+          <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center drop-shadow-2xl mb-4 animate-bounce">
             <img src={logo} alt="HQ Pickleball Logo" className="w-full h-full object-contain" />
           </div>
-          
+
           <h1 className="font-display font-extrabold text-4xl sm:text-6xl text-white tracking-tight leading-tight">
             Elevate Your <span className="text-emerald-400">Pickleball</span> Game at HQ Cebu
           </h1>
-          
+
           <p className="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
-            Welcome to **HQ Pickleball Cebu** – your premium pickleball destination in the heart of Cebu’s central business district! Located at the Grand Convention Center of Cebu.
+            Welcome to <strong>HQ Pickleball Cebu</strong> – your premium pickleball destination in the heart of Cebu’s central business district! Located at the Grand Convention Center of Cebu.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
@@ -136,15 +136,15 @@ export default function Landing() {
               <span>{VENUE_INFO.address}</span>
             </div>
           </div>
-          
+
           <div className="w-full md:w-72 shrink-0 h-44 rounded-xl overflow-hidden border border-white/10 relative">
             {/* Map Frame */}
             <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center p-4 text-center">
               <span className="font-display font-extrabold text-sm text-white">HQ Location Map</span>
               <span className="text-[10px] text-slate-500 mt-1">Archbishop Reyes Ave., Cebu City</span>
-              <a 
-                href={VENUE_INFO.contact.googleMapsLink} 
-                target="_blank" 
+              <a
+                href={VENUE_INFO.contact.googleMapsLink}
+                target="_blank"
                 rel="noreferrer"
                 className="mt-4 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-bold transition-all"
               >

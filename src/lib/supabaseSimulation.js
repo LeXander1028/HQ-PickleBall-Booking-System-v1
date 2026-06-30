@@ -34,23 +34,186 @@ function getInitialDB() {
       { id: 'court-3', name: 'Court 3', is_active: true, created_at: new Date().toISOString() }
     ],
     bookings: [
-      // Seed an upcoming booking for Court 1
+      // 1. Pending Verification (processing)
       {
         id: 'booking-seed-1',
         user_id: 'mock-player-uuid-1',
         court_id: 'court-1',
-        date: new Date().toISOString().split('T')[0], // Today
-        start_hour: 17, // 5 PM
+        date: new Date().toISOString().split('T')[0],
+        start_hour: 17,
         duration_hours: 2,
-        total_price: 1000.00,
-        status: 'confirmed',
-        notes: 'Booked under: Juan Dela Cruz · No extras · Practice session',
+        total_price: 1200.00,
+        status: 'processing',
+        notes: 'Booked under: Juan Dela Cruz · No extras · Needs verification',
         contact_phone: '+63 917 111 2222',
         payment_method_id: 'payment-gcash-uuid',
         payment_sender_name: 'Juan Dela Cruz',
-        payment_reference: '123456789',
+        payment_reference: 'GCASH123987',
+        payment_collected: false,
+        created_at: new Date(Date.now() - 3600000).toISOString()
+      },
+      // 2. Confirmed Future Booking
+      {
+        id: 'booking-seed-2',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-2',
+        date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        start_hour: 18,
+        duration_hours: 2,
+        total_price: 1200.00,
+        status: 'confirmed',
+        notes: 'Booked under: Maria Clara · +2 Paddles',
+        contact_phone: '+63 918 222 3333',
+        payment_method_id: 'payment-gotyme-uuid',
+        payment_sender_name: 'Maria Clara',
+        payment_reference: 'GT987654321',
         payment_collected: true,
+        created_at: new Date(Date.now() - 86400000).toISOString()
+      },
+      // 3. Completed Past Booking
+      {
+        id: 'booking-seed-3',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-3',
+        date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
+        start_hour: 8,
+        duration_hours: 3,
+        total_price: 900.00,
+        status: 'completed',
+        notes: 'Booked under: Jose Rizal · Morning Promo',
+        contact_phone: '+63 919 333 4444',
+        payment_method_id: 'payment-gcash-uuid',
+        payment_sender_name: 'Jose Rizal',
+        payment_reference: 'GCASH555666',
+        payment_collected: true,
+        created_at: new Date(Date.now() - 86400000 * 3).toISOString()
+      },
+      // 4. Cancelled Booking with Reason
+      {
+        id: 'booking-seed-4',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-1',
+        date: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+        start_hour: 10,
+        duration_hours: 1,
+        total_price: 300.00,
+        status: 'cancelled',
+        notes: 'Booked under: Andres Bonifacio',
+        contact_phone: '+63 920 444 5555',
+        payment_method_id: null,
+        payment_sender_name: null,
+        payment_reference: null,
+        payment_collected: false,
+        rejection_reason: 'Court maintenance scheduled',
+        created_at: new Date(Date.now() - 86400000).toISOString()
+      },
+      // 5. Processing (No Reference Yet)
+      {
+        id: 'booking-seed-5',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-2',
+        date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+        start_hour: 19,
+        duration_hours: 2,
+        total_price: 1200.00,
+        status: 'processing',
+        notes: 'Booked under: Emilio Aguinaldo',
+        contact_phone: '+63 921 555 6666',
+        payment_method_id: null,
+        payment_sender_name: null,
+        payment_reference: null,
+        payment_collected: false,
         created_at: new Date().toISOString()
+      },
+      // 6. Admin Desk Booking (Confirmed)
+      {
+        id: 'booking-seed-6',
+        user_id: null,
+        court_id: 'court-3',
+        date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        start_hour: 20,
+        duration_hours: 1,
+        total_price: 600.00,
+        status: 'confirmed',
+        notes: 'Booked under: Apolinario Mabini · Staff Desk Reservation',
+        contact_phone: '+63 922 666 7777',
+        payment_method_id: null,
+        payment_sender_name: null,
+        payment_reference: 'ADMIN',
+        payment_collected: true,
+        created_at: new Date(Date.now() - 7200000).toISOString()
+      },
+      // 7. Confirmed Booking
+      {
+        id: 'booking-seed-7',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-1',
+        date: new Date(Date.now() + 86400000 * 4).toISOString().split('T')[0],
+        start_hour: 16,
+        duration_hours: 2,
+        total_price: 1200.00,
+        status: 'confirmed',
+        notes: 'Booked under: Gabriela Silang',
+        contact_phone: '+63 923 777 8888',
+        payment_method_id: 'payment-gcash-uuid',
+        payment_sender_name: 'Gabriela Silang',
+        payment_reference: 'GCASH777888',
+        payment_collected: true,
+        created_at: new Date(Date.now() - 86400000 * 2).toISOString()
+      },
+      // 8. Processing Booking
+      {
+        id: 'booking-seed-8',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-2',
+        date: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
+        start_hour: 14,
+        duration_hours: 3,
+        total_price: 1800.00,
+        status: 'processing',
+        notes: 'Booked under: Antonio Luna',
+        contact_phone: '+63 924 888 9999',
+        payment_method_id: 'payment-gotyme-uuid',
+        payment_sender_name: 'Antonio Luna',
+        payment_reference: 'GT333444555',
+        payment_collected: false,
+        created_at: new Date(Date.now() - 1800000).toISOString()
+      },
+      // 9. Confirmed Booking
+      {
+        id: 'booking-seed-9',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-3',
+        date: new Date().toISOString().split('T')[0],
+        start_hour: 21,
+        duration_hours: 2,
+        total_price: 1200.00,
+        status: 'confirmed',
+        notes: 'Booked under: Lapu-Lapu',
+        contact_phone: '+63 925 999 0000',
+        payment_method_id: 'payment-gcash-uuid',
+        payment_sender_name: 'Lapu-Lapu',
+        payment_reference: 'GCASH999000',
+        payment_collected: true,
+        created_at: new Date(Date.now() - 43200000).toISOString()
+      },
+      // 10. Completed Booking
+      {
+        id: 'booking-seed-10',
+        user_id: 'mock-player-uuid-1',
+        court_id: 'court-1',
+        date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+        start_hour: 9,
+        duration_hours: 2,
+        total_price: 600.00,
+        status: 'completed',
+        notes: 'Booked under: Melchora Aquino',
+        contact_phone: '+63 926 000 1111',
+        payment_method_id: 'payment-gotyme-uuid',
+        payment_sender_name: 'Melchora Aquino',
+        payment_reference: 'GT111222333',
+        payment_collected: true,
+        created_at: new Date(Date.now() - 86400000 * 4).toISOString()
       }
     ],
     blocked_slots: [

@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
 import { Bell, Menu, X, LogOut, Shield, User, Calendar, Trophy, HelpCircle } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logo from '../assets/hqPickleCircleFrame.png';
 
 export default function Navbar() {
   const { user, profile, logout } = useAuth();
@@ -78,7 +78,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 glass border-b border-white/5 px-4 md:px-8 py-3 flex items-center justify-between">
       {/* Logo & Brand */}
       <Link to={user ? "/home" : "/"} className="flex items-center gap-3 group">
-        <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center p-1 border border-white/10 group-hover:border-emerald-500/30 transition-all duration-300">
+        <div className="relative w-14 h-14 flex items-center justify-center drop-shadow-md group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all duration-300">
           <img src={logo} alt="PaddleHub Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col text-left">
@@ -91,7 +91,7 @@ export default function Navbar() {
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-2">
-        {user ? (
+        {user && (
           profile?.role === 'admin' ? (
             <>
               <Link to="/admin" className={linkClass('/admin')}>
@@ -103,7 +103,6 @@ export default function Navbar() {
               <Link to="/admin/slots" className={linkClass('/admin/slots')}>Blocks</Link>
               <Link to="/admin/openplay" className={linkClass('/admin/openplay')}>Open Play</Link>
               <Link to="/admin/users" className={linkClass('/admin/users')}>Users</Link>
-              <Link to="/popup" className={linkClass('/popup')}>Pop-up Store</Link>
             </>
           ) : (
             <>
@@ -127,8 +126,6 @@ export default function Navbar() {
               <Link to="/popup" className={linkClass('/popup')}>Pop-up Store</Link>
             </>
           )
-        ) : (
-          <Link to="/popup" className={linkClass('/popup')}>Pop-up Store</Link>
         )}
       </div>
 
@@ -202,12 +199,15 @@ export default function Navbar() {
             </button>
           </>
         ) : (
-          <Link
-            to="/login"
-            className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] glow-emerald"
-          >
-            Sign In
-          </Link>
+          <>
+            <Link to="/popup" className={`hidden md:block ${linkClass('/popup')}`}>Pop-up Store</Link>
+            <Link
+              to="/login"
+              className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] glow-emerald"
+            >
+              Sign In
+            </Link>
+          </>
         )}
 
         {/* Mobile Menu Button */}
@@ -260,13 +260,6 @@ export default function Navbar() {
                 className="p-3 rounded-lg text-left text-sm font-medium text-slate-200 hover:bg-slate-800"
               >
                 Manage Users
-              </Link>
-              <Link
-                to="/popup"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-lg text-left text-sm font-medium text-slate-200 hover:bg-slate-800"
-              >
-                Pop-up Store Space
               </Link>
             </>
           ) : (
