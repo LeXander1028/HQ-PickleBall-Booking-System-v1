@@ -79,7 +79,7 @@ export default function Navbar() {
       {/* Logo & Brand */}
       <Link to={user ? "/home" : "/"} className="flex items-center gap-3 group">
         <div className="relative w-14 h-14 flex items-center justify-center drop-shadow-md group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all duration-300">
-          <img src={logo} alt="PaddleHub Logo" className="w-full h-full object-contain" />
+          <img src={logo} alt="HQ Pickle Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col text-left">
           <span className="font-display font-extrabold text-lg leading-tight tracking-wider text-white group-hover:text-emerald-400 transition-colors">
@@ -91,7 +91,7 @@ export default function Navbar() {
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-2">
-        {user && (
+        {user ? (
           profile?.role === 'admin' ? (
             <>
               <Link to="/admin" className={linkClass('/admin')}>
@@ -126,6 +126,13 @@ export default function Navbar() {
               <Link to="/popup" className={linkClass('/popup')}>Pop-up Store</Link>
             </>
           )
+        ) : (
+          <>
+            <Link to="/" className={linkClass('/')}>Home</Link>
+            <a href="/#features" className={linkClass('/#features')}>Features</a>
+            <a href="/#rates" className={linkClass('/#rates')}>Rates</a>
+            <a href="/#location" className={linkClass('/#location')}>Location</a>
+          </>
         )}
       </div>
 

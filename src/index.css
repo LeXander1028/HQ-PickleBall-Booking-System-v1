@@ -5,22 +5,22 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  /* Premium Space Violet & Neon Lime Theme Palette */
-  --color-slate-900: #0a0815;
-  --color-slate-950: #05040a;
+  /* Premium Green Theme Palette */
+  --color-slate-900: #0B3B2E; /* Dark Green for cards */
+  --color-slate-950: #013220; /* Very Dark Green for deep backgrounds */
   
-  /* Redirect emerald (CTA highlights) to Neon Lime Green! */
-  --color-emerald-500: #a2fc2a;
-  --color-emerald-600: #8ae317;
+  /* Accents */
+  --color-emerald-500: #8B9F8E; /* Pale green for text/highlights */
+  --color-emerald-600: #345F4B; /* Light green for hover states */
   
-  /* Neon Purple accents */
-  --color-indigo-500: #8b5cf6;
-  --color-indigo-600: #7c3aed;
+  /* Secondary accents */
+  --color-indigo-500: #345F4B;
+  --color-indigo-600: #1F4838;
   
   /* Rate bracket colors */
   --color-bracket-morning: #f97316;   /* Orange: Morning */
   --color-bracket-afternoon: #06b6d4; /* Cyan: Afternoon */
-  --color-bracket-evening: #8b5cf6;   /* Violet: Evening */
+  --color-bracket-evening: #345F4B;   /* Green: Evening */
   --color-bracket-night: #ec4899;     /* Pink: Late Night */
 }
 
@@ -30,40 +30,40 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: #07050f; /* Space Black-Violet */
+  background-color: #013220; /* Very Dark Green */
   color: #f3f4f6;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(162, 252, 42, 0.03) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(52, 95, 75, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(139, 159, 142, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(31, 72, 56, 0.15) 0px, transparent 50%);
   background-attachment: fixed;
 }
 
-/* Glassmorphism containers with subtle violet neon border */
+/* Glassmorphism containers with subtle green border */
 .glass {
-  background: rgba(13, 11, 26, 0.7);
+  background: rgba(11, 59, 46, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 159, 142, 0.15);
 }
 
 .glass-premium {
-  background: radial-gradient(100% 100% at 0% 0%, rgba(139, 92, 246, 0.08) 0%, rgba(13, 11, 26, 0.02) 100%);
+  background: radial-gradient(100% 100% at 0% 0%, rgba(52, 95, 75, 0.15) 0%, rgba(11, 59, 46, 0.02) 100%);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(139, 159, 142, 0.2);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), 0 0 30px rgba(52, 95, 75, 0.05);
 }
 
 /* Glowing animations */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(162, 252, 42, 0.3);
+    box-shadow: 0 0 15px rgba(139, 159, 142, 0.3);
   }
   50% {
-    box-shadow: 0 0 25px rgba(162, 252, 42, 0.6);
+    box-shadow: 0 0 25px rgba(139, 159, 142, 0.6);
   }
 }
 
@@ -133,12 +133,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(13, 11, 26, 0.5);
+  background: rgba(11, 59, 46, 0.5);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.2);
+  background: rgba(139, 159, 142, 0.2);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.4);
+  background: rgba(139, 159, 142, 0.4);
 }

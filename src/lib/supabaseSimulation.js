@@ -3,7 +3,7 @@
 
 import { buildFullNotes } from '../utils/parseBookingNotes';
 
-const STORAGE_KEY = 'paddlehub_simulation_db';
+const STORAGE_KEY = 'hqpickle_simulation_db';
 
 // Initial state builder
 function getInitialDB() {
@@ -13,7 +13,7 @@ function getInitialDB() {
         id: 'mock-admin-uuid-1',
         name: 'Staff Admin',
         phone: '+63 917 000 0000',
-        address: 'Consolacion, Cebu',
+        address: 'Archbishop Reyes, Cebu',
         onboarding_completed: true,
         role: 'admin',
         created_at: new Date().toISOString()
@@ -232,7 +232,7 @@ function getInitialDB() {
       {
         id: 'payment-gcash-uuid',
         name: 'GCash',
-        account_name: 'PaddleHub Consolacion (0917-123-4567)',
+        account_name: 'HQ Pickle Archbishop Reyes (0917-123-4567)',
         qr_image_url: 'https://placehold.co/400x400/030712/10b981?text=GCASH+QR',
         is_active: true,
         created_at: new Date().toISOString()
@@ -240,7 +240,7 @@ function getInitialDB() {
       {
         id: 'payment-gotyme-uuid',
         name: 'GoTyme Bank',
-        account_name: 'PaddleHub Sports Center (Account: 1234-5678-9012)',
+        account_name: 'HQ Pickle Sports Center (Account: 1234-5678-9012)',
         qr_image_url: 'https://placehold.co/400x400/030712/06b6d4?text=GOTYME+QR',
         is_active: true,
         created_at: new Date().toISOString()
@@ -286,12 +286,12 @@ let currentSession = null;
 const sessionListeners = new Set();
 
 // Load session from storage if present
-const storedSession = localStorage.getItem('paddlehub_simulation_session');
+const storedSession = localStorage.getItem('hqpickle_simulation_session');
 if (storedSession) {
   try {
     currentSession = JSON.parse(storedSession);
   } catch (e) {
-    localStorage.removeItem('paddlehub_simulation_session');
+    localStorage.removeItem('hqpickle_simulation_session');
   }
 }
 
@@ -328,7 +328,7 @@ export const supabaseSimulation = {
         user: { id, email, user_metadata: options?.data || {} }
       };
       currentSession = session;
-      localStorage.setItem('paddlehub_simulation_session', JSON.stringify(session));
+      localStorage.setItem('hqpickle_simulation_session', JSON.stringify(session));
       notifyAuthChange();
 
       return { data: { user: session.user, session }, error: null };
@@ -368,7 +368,7 @@ export const supabaseSimulation = {
       };
 
       currentSession = session;
-      localStorage.setItem('paddlehub_simulation_session', JSON.stringify(session));
+      localStorage.setItem('hqpickle_simulation_session', JSON.stringify(session));
       notifyAuthChange();
 
       return { data: { user: session.user, session }, error: null };
@@ -376,7 +376,7 @@ export const supabaseSimulation = {
 
     signOut: async () => {
       currentSession = null;
-      localStorage.removeItem('paddlehub_simulation_session');
+      localStorage.removeItem('hqpickle_simulation_session');
       sessionListeners.forEach(listener => listener('SIGNED_OUT', null));
       return { error: null };
     },
@@ -467,10 +467,20 @@ export const supabaseSimulation = {
         }
       }
 
-      // Sort by name
-      freeCourts.sort((a, b) => a.name.localeCompare(b.name));
+      // Map specific courts if provided
+      let courtsToBook = [];
+      if (p_court_ids && p_court_ids.length > 0) {
+        courtsToBook = p_court_ids.map(id => freeCourts.find(c => c.id === id)).filter(Boolean);
+      }
 
-      if (freeCourts.length < p_court_count) {
+      // Fallback if the requested courts aren't completely free, or no specific request
+      if (courtsToBook.length < p_court_count) {
+        // Sort by name
+        freeCourts.sort((a, b) => a.name.localeCompare(b.name));
+        courtsToBook = freeCourts.slice(0, p_court_count);
+      }
+
+      if (courtsToBook.length < p_court_count) {
         return { data: null, error: { message: "Collision Error: Not enough courts available" } };
       }
 
@@ -494,7 +504,7 @@ export const supabaseSimulation = {
 
       const createdBookings = [];
       for (let i = 0; i < p_court_count; i++) {
-        const court = freeCourts[i];
+        const court = courtsToBook[i];
         const isFirst = i === 0;
         const price = singleCourtPrice + (isFirst ? extrasPrice : 0);
 

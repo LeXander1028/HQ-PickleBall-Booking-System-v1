@@ -57,13 +57,13 @@ export default function Login() {
         {/* Branding logo */}
         <div className="flex flex-col items-center gap-2">
           <div className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center drop-shadow-2xl mb-2">
-            <img src={logo} alt="PaddleHub Logo" className="w-full h-full object-contain" />
+            <img src={logo} alt="HQ Pickle Logo" className="w-full h-full object-contain" />
           </div>
           <h2 className="font-display font-extrabold text-2xl text-white tracking-wider">
             {isSignUp ? "CREATE PLAYER PROFILE" : "SIGN IN TO PLAY"}
           </h2>
           <p className="text-xs text-slate-500 uppercase tracking-widest">
-            {isSignUp ? "Join the PaddleHub family" : "Reserve courts and view schedules"}
+            {isSignUp ? "Join the HQ Pickle family" : "Reserve courts and view schedules"}
           </p>
         </div>
 
@@ -169,7 +169,7 @@ export default function Login() {
                   <input
                     id="address"
                     type="text"
-                    placeholder="Consolacion, Cebu"
+                    placeholder="Tisa, Cebu"
                     value={address}
                     onChange={e => setAddress(e.target.value)}
                     className="w-full bg-slate-950 border border-white/5 focus:border-emerald-500 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none transition-all"

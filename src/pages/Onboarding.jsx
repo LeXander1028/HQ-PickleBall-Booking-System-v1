@@ -18,7 +18,7 @@ export default function Onboarding() {
       setName(profile.name || '');
       setPhone(profile.phone || '');
       setAddress(profile.address || '');
-      
+
       // If onboarding is already completed, go to Home
       if (profile.onboarding_completed) {
         navigate('/home');
@@ -121,7 +121,7 @@ export default function Onboarding() {
               <input
                 id="address"
                 type="text"
-                placeholder="Consolacion, Cebu"
+                placeholder="Tisa, Cebu"
                 value={address}
                 onChange={e => setAddress(e.target.value)}
                 className="w-full bg-slate-950 border border-white/5 focus:border-emerald-500 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none transition-all"

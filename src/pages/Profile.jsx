@@ -44,7 +44,7 @@ export default function Profile() {
         .eq('id', user.id);
 
       if (updateError) throw updateError;
-      
+
       await refreshProfile();
       setSuccess(true);
     } catch (err) {
@@ -131,7 +131,7 @@ export default function Profile() {
               <input
                 id="address"
                 type="text"
-                placeholder="Consolacion, Cebu"
+                placeholder="Tisa, Cebu"
                 value={address}
                 onChange={e => setAddress(e.target.value)}
                 className="w-full bg-slate-950 border border-white/5 focus:border-emerald-500 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none transition-all"

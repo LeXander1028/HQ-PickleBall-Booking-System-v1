@@ -10,7 +10,7 @@ import UserBookingTimeGrid from '../components/UserBookingTimeGrid';
 import BookingPriceBreakdown from '../components/admin/BookingPriceBreakdown';
 import { Calendar, User, Phone, ShoppingCart, CreditCard, ChevronRight, ChevronLeft, Check, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-const DRAFT_KEY = 'paddlehub_booking_draft';
+const DRAFT_KEY = 'hqpickle_booking_draft';
 
 export default function Book() {
   const { user, profile } = useAuth();
@@ -28,6 +28,7 @@ export default function Book() {
   
   const [duration, setDuration] = useState(1);
   const [selectedHour, setSelectedHour] = useState(null);
+  const [preferredColor, setPreferredColor] = useState('any');
 
   const [paddles, setPaddles] = useState(0);
   const [balls, setBalls] = useState(0);
@@ -42,6 +43,13 @@ export default function Book() {
   const [senderName, setSenderName] = useState('');
   const [referenceNo, setReferenceNo] = useState('');
   const [senderPlatform, setSenderPlatform] = useState('');
+
+  // Policies and Waivers
+  const [waiverAccepted, setWaiverAccepted] = useState(false);
+  const [policyAccepted, setPolicyAccepted] = useState(false);
+  const [likenessAccepted, setLikenessAccepted] = useState(false);
+  const [waiverModalOpen, setWaiverModalOpen] = useState(false);
+  const [policyModalOpen, setPolicyModalOpen] = useState(false);
 
   // Hold State (returned from DB create_booking_hold_auto)
   const [createdBookingIds, setCreatedBookingIds] = useState([]);
@@ -197,8 +205,8 @@ export default function Book() {
       userNotes
     });
 
-    // Resolve assigned court list to pass to RPC (optional but good practice)
-    const assigned = assignCourtsForBooking(selectedHour, duration, courtCount, bookings, blockedSlots);
+    // Optimistically determine assignment based on current loaded bookings and color preference
+    const assigned = assignCourtsForBooking(selectedHour, duration, courtCount, bookings, blockedSlots, preferredColor);
     const assignedIds = assigned.map(c => c.id);
 
     try {
@@ -443,8 +451,8 @@ export default function Book() {
           {/* Court visual layout guide */}
           <div className="flex flex-col gap-3.5 border-t border-white/5 pt-4 mt-1 text-left">
             <div className="flex flex-col gap-0.5">
-              <h4 className="text-xs text-white font-bold uppercase tracking-wider">Court Layout & Capacity</h4>
-              <p className="text-[10px] text-slate-500">Teal floor, gray play area, white lines. Each court fits <strong className="text-white">max 4 players</strong> · Standard rate: <strong className="text-indigo-400">₱600 / hr</strong></p>
+              <h4 className="text-xs text-white font-bold uppercase tracking-wider">Court Layout & Preference</h4>
+              <p className="text-[10px] text-slate-500">Tap a court to set your preferred surface color. Each court fits <strong className="text-white">max 4 players</strong>.</p>
             </div>
             
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
@@ -455,20 +463,30 @@ export default function Book() {
                 { name: "Court 4", netColor: "blue" },
                 { name: "Court 5", netColor: "red" },
                 { name: "Court 6", netColor: "blue" }
-              ].map((c, idx) => (
-                <div key={idx} className="flex flex-col items-center gap-1.5">
-                  <div className="court-container w-full shadow-lg">
+              ].map((c, idx) => {
+                const isSelected = preferredColor === 'any' || preferredColor === c.netColor;
+                const opacity = isSelected ? 'opacity-100' : 'opacity-40 grayscale';
+                const ring = preferredColor === c.netColor 
+                  ? (c.netColor === 'red' ? 'ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-950' : 'ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-950') 
+                  : '';
+                return (
+                <div 
+                  key={idx} 
+                  onClick={() => setPreferredColor(preferredColor === c.netColor ? 'any' : c.netColor)}
+                  className={`flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-300 ${opacity} hover:opacity-100`}
+                >
+                  <div className={`court-container w-full shadow-lg ${ring} rounded`}>
                     <div className="court-play-area">
                       <div className="court-lines-inner" />
                       <div className="court-center-line" />
                       <div className={`court-net-line ${c.netColor === 'red' ? 'net-red' : 'net-blue'}`} />
                     </div>
                   </div>
-                  <span className="text-[9px] font-bold tracking-wider text-slate-400 uppercase">
+                  <span className={`text-[9px] font-bold tracking-wider uppercase transition-colors ${preferredColor === c.netColor ? 'text-white' : 'text-slate-400'}`}>
                     {c.name} ({c.netColor === 'red' ? 'Red' : 'Blue'})
                   </span>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
 
@@ -867,10 +885,61 @@ export default function Book() {
                 />
               </div>
 
+              <div className="flex flex-col gap-4 my-4">
+                <div className="bg-slate-900/30 p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="waiverCheckbox"
+                      checked={waiverAccepted}
+                      onChange={e => setWaiverAccepted(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-white/10 bg-slate-950 accent-emerald-500 cursor-pointer"
+                    />
+                    <div className="flex flex-col text-sm">
+                      <label htmlFor="waiverCheckbox" className="font-semibold text-white cursor-pointer">
+                        Acknowledgment of Understanding
+                      </label>
+                      <p className="text-slate-400 text-xs mt-1">
+                        I have read this waiver fully, understand its terms, and sign it voluntarily. I understand that by signing on this logbook, I am giving up substantial legal rights, including the right to sue.
+                      </p>
+                      <p className="text-slate-500 text-[11px] mt-2">
+                        I accept the HQ PICKLEBALL CEBU waiver policy. You must read and accept the waiver before proceeding.{' '}
+                        <button type="button" onClick={() => setWaiverModalOpen(true)} className="text-emerald-400 hover:underline font-semibold">
+                          Read waiver
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/30 p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="policyCheckbox"
+                      checked={policyAccepted}
+                      onChange={e => setPolicyAccepted(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-white/10 bg-slate-950 accent-emerald-500 cursor-pointer"
+                    />
+                    <div className="flex flex-col text-sm">
+                      <label htmlFor="policyCheckbox" className="font-semibold text-white cursor-pointer">
+                        I accept the refund & cancellation policy
+                      </label>
+                      <p className="text-slate-500 text-[11px] mt-1">
+                        Summary: Please review the full refund & cancellation policy details before proceeding.{' '}
+                        <button type="button" onClick={() => setPolicyModalOpen(true)} className="text-emerald-400 hover:underline font-semibold">
+                          Read policy
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
+                disabled={loading || !waiverAccepted || !policyAccepted}
+                className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {loading ? (
                   <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
@@ -917,6 +986,101 @@ export default function Book() {
                 className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-lg transition-all"
               >
                 Downgrade & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Waiver Policy Modal */}
+      {waiverModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="glass border border-white/15 rounded-2xl w-full max-w-2xl max-h-[85vh] p-6 relative flex flex-col gap-4 shadow-2xl">
+            <h2 className="font-display font-bold text-xl text-white">Waiver Policy</h2>
+            <div className="overflow-y-auto pr-2 flex flex-col gap-4 text-xs text-slate-300 leading-relaxed no-scrollbar text-left">
+              <h3 className="font-semibold text-white text-sm">Liability and Injury Waiver</h3>
+              
+              <div className="flex flex-col gap-1.5">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Acknowledgment and Assumption of Risk</h4>
+                <p>I understand that participation in pickleball and related activities at HQ PICKLEBALL CEBU involves inherent risks that cannot be fully eliminated, regardless of the care taken to avoid injuries. These risks include, but are not limited to:</p>
+                <ul className="list-disc pl-4 flex flex-col gap-1 text-slate-400">
+                  <li>Slips, trips, and falls on courts or surrounding areas</li>
+                  <li>Collisions with players, paddles, or balls</li>
+                  <li>Muscle strains, sprains, bruises, and joint injuries</li>
+                  <li>Heat-related illnesses such as dehydration or heatstroke</li>
+                  <li>Serious injuries including fractures, heart attacks, concussions, or even death</li>
+                  <li>Exposure to communicable diseases such as COVID-19</li>
+                </ul>
+                <p>I understand these risks and voluntarily accept full responsibility for any personal injury, illness, loss, or damage arising out of my participation in any pickleball activity, whether supervised or unsupervised.</p>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Release and Waiver of Liability</h4>
+                <p>In consideration of being permitted to use the facilities, equipment, and services provided by HQ PICKLEBALL CEBU, I, for myself and my heirs, executors, administrators, and assigns, hereby release, waive, discharge, and covenant not to sue HQ PICKLEBALL CEBU, its owners, officers, employees, contractors, volunteers, sponsors, or agents for any and all liability, claims, demands, actions, or causes of action arising out of or related to any loss, damage, or injury, including death, that may occur while participating in facility activities.</p>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Indemnification and Hold Harmless</h4>
+                <p>I agree to indemnify and hold harmless HQ PICKLEBALL CEBU, its officers, employees, and agents from any claims, damages, or costs (including attorney’s fees) arising from my participation or conduct while at the facility, whether caused by negligence or otherwise.</p>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Fitness to Participate</h4>
+                <p>I certify that I am physically fit and have no medical conditions that would prevent me from safely participating in pickleball activities. I understand that it is my responsibility to consult a physician before participating if I have any health concerns.</p>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-2 bg-slate-900/50 p-3 rounded-lg border border-white/5">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Consent for Use of Likeness</h4>
+                <div className="flex items-start gap-2">
+                  <input 
+                    type="checkbox" 
+                    id="likenessCheckbox"
+                    checked={likenessAccepted}
+                    onChange={e => setLikenessAccepted(e.target.checked)}
+                    className="mt-0.5 w-3.5 h-3.5 rounded border-white/10 bg-slate-950 accent-emerald-500 cursor-pointer"
+                  />
+                  <label htmlFor="likenessCheckbox" className="text-xs text-slate-300 cursor-pointer leading-tight">
+                    I grant HQ PICKLEBALL CEBU permission to use photographs, video recordings, or other media of my participation for promotional, educational, or informational purposes without compensation or restriction.
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5 mt-2">
+                <h4 className="font-semibold text-emerald-400 uppercase tracking-wider text-[10px]">Severability</h4>
+                <p>If any portion of this agreement is found invalid or unenforceable by a court, the remaining portions shall remain in full force and effect.</p>
+              </div>
+            </div>
+            <div className="flex justify-end pt-2 border-t border-white/5 mt-2">
+              <button
+                type="button"
+                onClick={() => setWaiverModalOpen(false)}
+                className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
+              >
+                Close & Return
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Policy Modal */}
+      {policyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="glass border border-white/15 rounded-2xl w-full max-w-md p-6 relative flex flex-col gap-4 shadow-2xl text-left">
+            <h2 className="font-display font-bold text-xl text-white">Refund & Cancellation Policy</h2>
+            <div className="flex flex-col gap-3 text-xs text-slate-300 leading-relaxed">
+              <p>I understand that the convenience fee is non-refundable.</p>
+              <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400">
+                <strong>Note:</strong> The convenience fee charged during checkout is non-refundable.
+              </div>
+            </div>
+            <div className="flex justify-end pt-2 border-t border-white/5 mt-2">
+              <button
+                type="button"
+                onClick={() => setPolicyModalOpen(false)}
+                className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
+              >
+                Understood
               </button>
             </div>
           </div>

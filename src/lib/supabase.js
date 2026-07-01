@@ -12,7 +12,7 @@ export const isSimulationMode =
   supabaseUrl === '';
 
 if (isSimulationMode) {
-  console.info("%c[PaddleHub DB] Running in Simulation Mode (LocalStorage fallback). Make a .env.local file to connect to real Supabase.", "color: #10b981; font-weight: bold; font-size: 11px;");
+  console.info("%c[HQ Pickle DB] Running in Simulation Mode (LocalStorage fallback). Make a .env.local file to connect to real Supabase.", "color: #10b981; font-weight: bold; font-size: 11px;");
 }
 
 export const supabase = isSimulationMode 
